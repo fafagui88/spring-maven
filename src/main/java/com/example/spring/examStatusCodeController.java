@@ -16,109 +16,103 @@ import jakarta.servlet.http.HttpServletResponse;
 public class examStatusCodeController {
 
 
-    @GetMapping("/api/status/{code}")
-    public void getStatusCode(
-        @PathVariable int code,
-        HttpServletRequest request,
-        HttpServletResponse response) throws IOException {
+  @GetMapping("/api/data/status/{code}")
+  public void getStatusCode(
+    @PathVariable int code,
+    HttpServletRequest request,
+    HttpServletResponse response) throws IOException {
 
-        String clientIP = request.getRemoteAddr();
+    String clientIP = request.getRemoteAddr();
 
-        ZoneId serverZone = ZoneId.systemDefault();
-        ZonedDateTime now = ZonedDateTime.now();
+    ZoneId serverZone = ZoneId.systemDefault();
+    ZonedDateTime now = ZonedDateTime.now();
 
-        response.setContentType("application/json"); 
-        String jsonOutput;
-
-        switch (code) {
-            case 200:
-
-                response.setStatus(HttpServletResponse.SC_OK); 
-                jsonOutput = String.format("""
-                    {
-                      "status_code": 200,
-                      "result": "SUKSES",
-                      "message": "Permintaan berhasil diproses.",
-                      "timestamp": "%s",
-                      "now": "%s",
-                      "location": "%s",
-                      "IP": "%s"
-                    }
-                    """, 
-                    LocalDateTime.now(), 
-                    now.toString(), 
-                    serverZone.getId(),
-                    clientIP
-                );
-                break;
-            case 404:
-
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND); 
-                jsonOutput = String.format("""
-                    {
-                      "status_code": 404,
-                      "result": "GAGAL",
-                      "error_type": "Client Error",
-                      "message": "Sumber daya tidak ditemukan, diatur oleh Servlet Container.",
-                      "timestamp": "%s",
-                      "now": "%s",
-                      "location": "%s",
-                      "IP": "%s"
-                    }
-                    """, 
-                    LocalDateTime.now(), 
-                    now.toString(), 
-                    serverZone.getId(),
-                    clientIP
-                );
-                break;
-            case 500:
-
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); 
-                jsonOutput = String.format("""
-                    {
-                      "status_code": 500,
-                      "result": "GAGAL",
-                      "error_type": "Server Error",
-                      "message": "Terjadi kesalahan internal yang disimulasikan.",
-                      "timestamp": "%s",
-                      "now": "%s",
-                      "location": "%s",
-                      "IP": "%s"
-                    }
-                    """, 
-                    LocalDateTime.now(), 
-                    now.toString(), 
-                    serverZone.getId(),
-                    clientIP
-                );
-                break;
-            default:
-
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST); 
-                 jsonOutput = String.format("""
-                    {
-                      "status_code": 400,
-                      "result": "GAGAL",
-                      "error_type": "Invalid Input",
-                      "message": "Kode status yang diminta tidak valid.",
-                      "timestamp": "%s",
-                      "now": "%s",
-                      "location": "%s",
-                      "IP": "%s"
-                    }
-                    """, 
-                    LocalDateTime.now(), 
-                    now.toString(), 
-                    serverZone.getId(),
-                    clientIP
-                );
-                break;
+    response.setContentType("application/json"); 
+    String jsonOutput = switch (code) {
+        case 200 -> {
+            response.setStatus(HttpServletResponse.SC_OK);
+            yield String.format("""
+                {
+                  "status_code": 200,
+                  "result": "SUKSES",
+                  "message": "Permintaan berhasil diproses.",
+                  "timestamp": "%s",
+                  "now": "%s",
+                  "location": "%s",
+                  "IP": "%s"
+                }
+                """, 
+                LocalDateTime.now(), 
+                now.toString(), 
+                serverZone.getId(),
+                clientIP
+            );
         }
+        case 404 -> {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            yield String.format("""
+                {
+                  "status_code": 404,
+                  "result": "GAGAL",
+                  "error_type": "Client Error",
+                  "message": "Sumber daya tidak ditemukan, diatur oleh Servlet Container.",
+                  "timestamp": "%s",
+                  "now": "%s",
+                  "location": "%s",
+                  "IP": "%s"
+                }
+                """, 
+                LocalDateTime.now(), 
+                now.toString(), 
+                serverZone.getId(),
+                clientIP
+            );
+        }
+        case 500 -> {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            yield String.format("""
+                {
+                  "status_code": 500,
+                  "result": "GAGAL",
+                  "error_type": "Server Error",
+                  "message": "Terjadi kesalahan internal yang disimulasikan.",
+                  "timestamp": "%s",
+                  "now": "%s",
+                  "location": "%s",
+                  "IP": "%s"
+                }
+                """, 
+                LocalDateTime.now(), 
+                now.toString(), 
+                serverZone.getId(),
+                clientIP
+            );
+        }
+        default -> {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            yield String.format("""
+                {
+                  "status_code": 400,
+                  "result": "GAGAL",
+                  "error_type": "Invalid Input",
+                  "message": "Kode status yang diminta tidak valid.",
+                  "timestamp": "%s",
+                  "now": "%s",
+                  "location": "%s",
+                  "IP": "%s"
+                }
+                """, 
+                LocalDateTime.now(), 
+                now.toString(), 
+                serverZone.getId(),
+                clientIP
+            );
+        }
+    };
 
 
-        response.getWriter().println(jsonOutput);
+    response.getWriter().println(jsonOutput);
 
 
-    }
+  }
 }

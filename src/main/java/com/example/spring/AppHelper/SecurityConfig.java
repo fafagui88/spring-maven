@@ -31,11 +31,12 @@ public class SecurityConfig {
             .requestMatchers("/api/auth").permitAll() 
             .requestMatchers("/api/auth/register").permitAll() 
             .requestMatchers("/api/auth/generate/token").permitAll() 
+
             .requestMatchers("/api/data/users").permitAll() 
-            
             .requestMatchers("/api/data/members").permitAll() 
             .requestMatchers("/api/data/members/register").permitAll() 
             .requestMatchers("/api/data/array").permitAll() 
+            .requestMatchers("/api/data/status/*").permitAll() 
             .requestMatchers("/error").permitAll()
 
             /*
