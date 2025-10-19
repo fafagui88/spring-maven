@@ -28,5 +28,5 @@ public class arrayToJsonController {
     ** menjadi JSON Array oleh Spring library saat dikirim sebagai response.
     */
     return dummyData;
-    }
+  }
 }
