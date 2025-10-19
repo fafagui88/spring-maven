@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.spring.model.User;
+import com.example.spring.model.MemberModel;
 
 @RestController
 @RequestMapping("/api/data")
@@ -27,24 +27,23 @@ public class UserController {
   private final String passwordToHash = "123";
 
   /**
-  ** Menangani permintaan GET ke /api/data/users
+  ** Menangani permintaan GET ke /api/data/members
   ** dan mengembalikan List<User> yang akan di-encode otomatis ke JSON Array.
   ** @return List<User> dummy data array object.
   */
   
-  @GetMapping("/users")
-  public List<User> getDummyUsers() {
-
+  @GetMapping("/members")
+  public List<MemberModel> getDummymembers() {
     String hashedPassword = passwordEncoder.encode(passwordToHash);
     LocalDateTime currentDateTime = LocalDateTime.now();
     String exampleUpdateDate = "2025-10-17";
-
-    List<User> users = new ArrayList<>();
-
+    
+    List<MemberModel> members = new ArrayList<>();
+    /*
     /*
     ** Objek User 1: hans
     */
-    users.add(new User(
+    members.add(new MemberModel(
         10, 
         "hans", 
         hashedPassword, // Password 123 sudah di-hashing BCrypt
@@ -54,11 +53,11 @@ public class UserController {
         1, 
         "unverify"
     ));
-
+    /*
     /*
     ** Objek User 2: ariq
     */
-    users.add(new User(
+    members.add(new MemberModel(
         11, 
         "ariq", 
         hashedPassword, // Password 123 yang sama sudah di-hashing
@@ -68,11 +67,10 @@ public class UserController {
         1, 
         "verifyed"
     ));
-    
     /*
     ** Spring secara otomatis akan mengubah List<User> 
     ** ini menjadi JSON Array
     */
-    return users;
+    return members;
   }
 }
