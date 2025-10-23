@@ -23,7 +23,7 @@ Tabel `users` harus memiliki *field* yang sesuai dengan `UserEntity.java`:
 
 | Column Name | Data Type | Key/Constraints | Keterangan |
 | :--- | :--- | :--- | :--- |
-| `id` | `bigint` | Primary Key, Auto Increment | ID unik pengguna |
+| `id` | `int` | Primary Key, Auto Increment | ID unik pengguna |
 | `username` | `varchar(255)` | Unique, Not Null | Nama pengguna (untuk login/identifikasi) |
 | `email` | `varchar(255)` | Unique, Not Null | Alamat email |
 | `password` | `varchar(255)` | Not Null | Password yang sudah di-hash BCrypt |
