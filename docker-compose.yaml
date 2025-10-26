@@ -1,0 +1,47 @@
+services:
+  # 1. Services untuk (MySQL) - dan tambahkan HEALTHCHECK
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-db-spring
+    restart: always 
+    environment:
+      # PENTING: Menggunakan setting Anda
+      MYSQL_ROOT_PASSWORD: mysecretpw
+      MYSQL_DATABASE: db_spring
+    ports:
+      - "3306:3306" 
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    
+    # Kunci Solusi: Healthcheck untuk memeriksa ketersediaan port 3306
+    healthcheck:
+      # 💥 PERBAIKAN: Hapus spasi antara -p dan mysecretpw 💥
+      test: ["CMD-SHELL", "mysql -u root -pmysecretpw -e 'SELECT 1;'"] 
+      interval: 5s      # Cek setiap 5 detik
+      timeout: 10s      # Timeout setelah 10 detik
+      retries: 10       # Coba hingga 10 kali
+      start_period: 10s # Beri waktu 10 detik sebelum mulai mengecek
+
+  # ini utk Service SPRING MAVEN - wait for healthcheck
+  spring_app:
+    build: .
+    image: spring-maven 
+    container_name: spring-app-run
+    ports:
+      - "9091:9091"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/db_spring?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      # PERBAIKAN: Password harus sama dengan MYSQL_ROOT_PASSWORD
+      SPRING_DATASOURCE_PASSWORD: mysecretpw 
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update 
+      
+    # Kunci Solusi: Mengganti depends_on biasa menjadi menunggu 'service_healthy'
+    depends_on:
+      mysql:
+        condition: service_healthy 
+
+# Volume untuk data persisten MySQL
+volumes:
+  mysql_data: {}
