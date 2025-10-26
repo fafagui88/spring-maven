@@ -3,10 +3,12 @@ package com.example.spring.service;
 import java.util.Optional; // Murni POJO
 
 import org.springframework.beans.factory.annotation.Autowired; // Entity JPA
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.spring.entity.UserEntity;
+import com.example.spring.model.AuthResponse;
 import com.example.spring.model.RegisterRequest;
 import com.example.spring.model.UserModel;
 import com.example.spring.repository.UserRepository;
@@ -77,8 +79,45 @@ public class AuthService {
 
     return userModel; 
   }
+
+  /**
+   * Melakukan cek user existance dan generate kedua token.
+   * Menggantikan logika check di Controller.
+   */
+  public AuthResponse generateNewTokensByUsername(String username) throws UsernameNotFoundException {
+      
+      // Check eksistensi user menggunakan Repository
+      Optional<UserEntity> existingUser = userRepository.findByUsername(username); 
+
+      if (existingUser.isPresent()) {
+          /*
+          ** User ditemukan, generate token
+          */
+          String accessToken = jwtUtil.generateToken(username);
+          String refreshToken = jwtUtil.generateRefreshToken(username);
+          
+          /*
+          ** logic untuk mengupdate refresh token di DB
+          */
+          
+          return new AuthResponse(accessToken, refreshToken);
+      } else {
+          /*
+          ** Jika user tidak ditemukan, lempar exception yang ditangkap Controller
+          */
+          throw new UsernameNotFoundException("User not found with username: " + username);
+    }
+}
   
   public String generateToken(String username) {
     return jwtUtil.generateToken(username);
+  }
+
+  /*
+  ** Tambahkan juga metode generate
+  ** RefreshToken jika diperlukan untuk fitur refresh
+  */
+  public String generateRefreshToken(String username) {
+    return jwtUtil.generateRefreshToken(username);
   }
 }
