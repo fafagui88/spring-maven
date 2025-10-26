@@ -21,7 +21,7 @@ services:
       interval: 5s      # Cek setiap 5 detik
       timeout: 10s      # Timeout setelah 10 detik
       retries: 10       # Coba hingga 10 kali
-      start_period: 10s # Beri waktu 10 detik sebelum mulai mengecek
+      start_period: 10s # dikasih waktu 10 detik sebelum mulai pengecekan
 
   # ini utk Service SPRING MAVEN - wait for healthcheck
   spring_app:
